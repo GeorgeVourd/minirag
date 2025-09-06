@@ -63,17 +63,17 @@ Request body:
 { "question": "What is our return policy?" }
 ```
 
-Ask question from .env setting:
+Answer engine determined from .env USE_LANGGRAPH=0 or USE_LANGGRAPH=1
 ```bash
 curl -X POST -H "Content-Type: application/json"   -d '{"question":"What is our return policy?"}'   http://localhost:8000/ask
 ```
 
-Ask Langchain
+Answer engine: Langchain
 ```bash
 curl -X POST 'http://127.0.0.1:8000/ask?engine=chain'   -H 'Content-Type: application/json'   -d '{"question":"What is our return policy?"}'
 ```
 
-Ask Langgraph
+Answer engine:  Langgraph
 ```bash
 curl -X POST 'http://127.0.0.1:8000/ask?engine=graph'   -H 'Content-Type: application/json'   -d '{"question":"What is our return policy?"}'
 ```
