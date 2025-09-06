@@ -21,8 +21,7 @@ site/
 # =========================
 .env
 .env.*
-!.env.example          # κρατάμε μόνο το example
-*.env
+!.env.example          
 .venv/
 venv/
 ENV/
@@ -54,7 +53,7 @@ logs/*
 # =========================
 # RAG artifacts (FAISS, Chroma)
 # =========================
-data/index/*           # ο index να φτιάχνεται runtime
+data/index/*           
 !data/index/.gitkeep
 **/index.faiss
 **/index.pkl
