@@ -1,0 +1,76 @@
+# =========================
+# Python bytecode & builds
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dylib
+
+# Build / dist / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+.wheelhouse/
+site/
+
+# =========================
+# Envs & secrets
+# =========================
+.env
+.env.*
+!.env.example          # κρατάμε μόνο το example
+*.env
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+pip-cache/
+__pypackages__/
+
+# =========================
+# Caches / tooling
+# =========================
+.cache/
+.mypy_cache/
+.pytest_cache/
+.pyre/
+ruff_cache/
+.tox/
+.nox/
+.ipynb_checkpoints/
+.python-version
+
+# =========================
+# Logs (κρατάμε κενό φάκελο)
+# =========================
+logs/*
+!logs/.gitkeep
+*.log
+
+# =========================
+# RAG artifacts (FAISS, Chroma)
+# =========================
+data/index/*           # ο index να φτιάχνεται runtime
+!data/index/.gitkeep
+**/index.faiss
+**/index.pkl
+**/faiss_index*
+vectorstore/
+chroma/
+chroma_db/
+.chromadb/
+
+# =========================
+# Editors / OS
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.orig
