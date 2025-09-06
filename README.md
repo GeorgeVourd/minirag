@@ -1,6 +1,6 @@
 # Mini RAG-based Question Answering API (LangChain + FAISS)
 
-A minimal Retrieval-Augmented Generation (RAG) service built with **FastAPI**, **LangChain**, **FAISS**, and **OpenAI** (with **HuggingFace** fallback).  
+A minimal Retrieval-Augmented Generation (RAG) service built with **FastAPI**, **LangChain**, **LangGraph**, **FAISS**, and **OpenAI** (with **HuggingFace** fallback).  
 Upload `.txt`/`.md` documents, ask questions, and get answers with cited sources.
 
 ## Features
@@ -14,22 +14,26 @@ Upload `.txt`/`.md` documents, ask questions, and get answers with cited sources
 ## Requirements
 - Python **3.11**
 
-## Install
-```bash
-# from project root
+## Clone Repo
+```PowerShell
+cd "C:\Users\**USERNAME**\Documents"
+git clone https://github.com/GeorgeVourd/minirag.git minirag_fresh
+cd .\minirag_fresh
+```
+## Set venv and install requirements 
+```PowerShell 
+py -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
-> For local HuggingFace LLM fallback, you may also need a compatible **PyTorch** build. See https://pytorch.org/
-
-## Configure
-Create a `.env` in the project root (same folder as `requirements.txt`) by copying `.env.example`:
-```bash
-cp .env.example .env
+## Create .env from example
+```PowerShell
+Copy-Item .env.example .env
 ```
-Fill in your `OPENAI_API_KEY` if you want to use OpenAI. If you leave it empty, the app will use the HuggingFace fallback models defined in `.env`.
-
 ## Run
-```bash
+```Powershell
 uvicorn app.main:app --reload
 ```
 - Swagger UI: `http://localhost:8000/docs`
@@ -59,17 +63,18 @@ Request body:
 { "question": "What is our return policy?" }
 ```
 
-Example:
+Ask question from .env setting:
 ```bash
 curl -X POST -H "Content-Type: application/json"   -d '{"question":"What is our return policy?"}'   http://localhost:8000/ask
+```
 
-
-**Bonus***
-# For langchain execution no matter the choice on .env
+Ask Langchain
+```bash
 curl -X POST 'http://127.0.0.1:8000/ask?engine=chain'   -H 'Content-Type: application/json'   -d '{"question":"What is our return policy?"}'
+```
 
-# For langgraph execution regardless of .env setting
-
+Ask Langgraph
+```bash
 curl -X POST 'http://127.0.0.1:8000/ask?engine=graph'   -H 'Content-Type: application/json'   -d '{"question":"What is our return policy?"}'
 ```
 
@@ -77,7 +82,7 @@ Response (example):
 ```json
 {
   "answer": "Customers may return products within 30 days for a full refund.",
-  "sources": ["policies.md"]
+  "sources": ["sample.md"]
 }
 ```
 
@@ -98,7 +103,6 @@ Logs are written to `logs/app.log` (and console). They include the question, the
   - Embeddings: `sentence-transformers/all-MiniLM-L6-v2`
   - LLM: `google/flan-t5-base` (text2text generation)
 - You may need to install **torch** for your platform; see PyTorch site for the correct wheel.
-- Local models are slower and less capable than OpenAI GPT models; use for demo/offline mode.
 
 ## Troubleshooting
 - **No docs uploaded**: `/ask` returns 400 until you upload at least one document.
@@ -109,14 +113,16 @@ Logs are written to `logs/app.log` (and console). They include the question, the
 
 **Project Layout**
 ```
-mini_rag_qa/
+minirag/
 ├── app/
-│   ├── main.py          # FastAPI app (routes)
-│   ├── ingestion.py     # load/split docs, FAISS save/load
-│   ├── qa.py            # embeddings, LLM, retrieval chain
-│   └── utils.py         # config/env/logging helpers
-├── data/                # (created at runtime) initial docs or saved index
-├── logs/                # (created at runtime) app logs
-├── requirements.txt
-└── .env.example
+│   ├── main.py          # FastAPI app (routes: /upload, /ask, /ask_graph)
+│   ├── ingestion.py     # load/split docs, build/load FAISS
+│   ├── qa.py            # classic RAG (retriever + HF LLM) for /ask
+│   ├── qa_graph.py      # LangGraph graph: state, nodes (retrieve→generate), edges, compile
+│   └── utils.py         # config/env/logging helpers (incl. HF models, paths)
+├── data/                # (runtime) sources & FAISS index
+├── logs/                # (runtime) app logs
+├── requirements.txt     # required python libraries
+└── .env.example         # example of .env
+
 ```
